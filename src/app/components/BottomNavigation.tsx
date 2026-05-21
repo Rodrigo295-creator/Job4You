@@ -11,7 +11,7 @@ export function BottomNavigation({ screen = 'home', setScreen }: Props) {
   const tabs = [
     { id: 'home', label: t('nav.home'), Icon: Home },
     { id: 'search', label: t('nav.searchTab'), Icon: Search },
-    { id: 'notifications', label: t('nav.notifications'), Icon: Bell, badge: true },
+    { id: 'chat', label: t('nav.chat'), Icon: Bell, badge: true },
     { id: 'profile', label: t('nav.profile'), Icon: User },
   ];
 
@@ -24,7 +24,6 @@ export function BottomNavigation({ screen = 'home', setScreen }: Props) {
             key={id}
             onClick={() => {
               if (id === 'profile') setScreen?.('account');
-              else if (id === 'notifications') setScreen?.('chat');
               else setScreen?.(id);
             }}
             className="flex flex-col items-center gap-1 relative"
