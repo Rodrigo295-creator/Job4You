@@ -6,12 +6,19 @@ import {
   type AppLocale,
   type TranslateParams,
 } from '@/lib/i18n';
+import {
+  readStoredTheme,
+  writeStoredTheme,
+  readStoredFontSize,
+  writeStoredFontSize,
+  readStoredCurrency,
+  writeStoredCurrency,
+  type Theme,
+  type FontSize,
+  type Currency,
+} from '@/lib/settings-storage';
 
-export type { AppLocale };
-
-export type Theme = 'light' | 'dark' | 'system';
-export type FontSize = 'sm' | 'md' | 'lg';
-export type Currency = 'BRL' | 'USD' | 'EUR';
+export type { AppLocale, Theme, FontSize, Currency };
 
 export type A11yPrefs = {
   reduceMotion: boolean;
@@ -19,6 +26,7 @@ export type A11yPrefs = {
   highContrast: boolean;
   touchTargets: boolean;
   captions: boolean;
+  screenReader: boolean;
 };
 
 const A11Y_STORAGE_KEY = 'job4you-a11y';
@@ -29,6 +37,7 @@ const DEFAULT_A11Y: A11yPrefs = {
   highContrast: false,
   touchTargets: false,
   captions: true,
+  screenReader: false,
 };
 
 function readStoredA11y(): A11yPrefs {
@@ -93,6 +102,8 @@ interface AppSettingsCtx {
   setTouchTargets: (v: boolean) => void;
   captions: boolean;
   setCaptions: (v: boolean) => void;
+  screenReader: boolean;
+  setScreenReader: (v: boolean) => void;
 }
 
 const SYMBOLS: Record<Currency, string> = { BRL: 'R$', USD: '$', EUR: '€' };
@@ -100,9 +111,9 @@ const SYMBOLS: Record<Currency, string> = { BRL: 'R$', USD: '$', EUR: '€' };
 const Ctx = createContext<AppSettingsCtx | null>(null);
 
 export function AppSettingsProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<Theme>('light');
-  const [fontSize, setFontSize] = useState<FontSize>('md');
-  const [currency, setCurrency] = useState<Currency>('BRL');
+  const [theme, setThemeState] = useState<Theme>(readStoredTheme);
+  const [fontSize, setFontSizeState] = useState<FontSize>(readStoredFontSize);
+  const [currency, setCurrencyState] = useState<Currency>(readStoredCurrency);
   const [locale, setLocaleState] = useState<AppLocale>(readStoredLocale);
   const [a11y, setA11y] = useState<A11yPrefs>(readStoredA11y);
 
@@ -119,6 +130,22 @@ export function AppSettingsProvider({ children }: { children: ReactNode }) {
   const setHighContrast = useCallback((v: boolean) => patchA11y({ highContrast: v }), [patchA11y]);
   const setTouchTargets = useCallback((v: boolean) => patchA11y({ touchTargets: v }), [patchA11y]);
   const setCaptions = useCallback((v: boolean) => patchA11y({ captions: v }), [patchA11y]);
+  const setScreenReader = useCallback((v: boolean) => patchA11y({ screenReader: v }), [patchA11y]);
+
+  const setTheme = useCallback((t: Theme) => {
+    setThemeState(t);
+    writeStoredTheme(t);
+  }, []);
+
+  const setFontSize = useCallback((f: FontSize) => {
+    setFontSizeState(f);
+    writeStoredFontSize(f);
+  }, []);
+
+  const setCurrency = useCallback((c: Currency) => {
+    setCurrencyState(c);
+    writeStoredCurrency(c);
+  }, []);
 
   const setLocale = useCallback((next: AppLocale) => {
     setLocaleState(next);
@@ -159,6 +186,7 @@ export function AppSettingsProvider({ children }: { children: ReactNode }) {
     root.classList.toggle('high-contrast', a11y.highContrast);
     root.classList.toggle('touch-targets', a11y.touchTargets);
     root.classList.toggle('captions-enabled', a11y.captions);
+    root.classList.toggle('screen-reader-mode', a11y.screenReader);
   }, [a11y]);
 
   const t = useCallback(
@@ -200,6 +228,8 @@ export function AppSettingsProvider({ children }: { children: ReactNode }) {
       setTouchTargets,
       captions: a11y.captions,
       setCaptions,
+      screenReader: a11y.screenReader,
+      setScreenReader,
     }}>
       {children}
     </Ctx.Provider>
