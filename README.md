@@ -32,7 +32,16 @@ Configure em **Vercel → Project → Environment Variables** as mesmas variáve
 
 ## Repositório
 
+https://github.com/Rodrigo295-creator/Job4You
+
 ```bash
-git remote add origin https://github.com/Rodrigo295-creator/Job4You.git
-git push -u origin main
+git clone https://github.com/Rodrigo295-creator/Job4You.git
+cd Job4You
+npm install
+```
+
+Para enviar alterações (com [GitHub CLI](https://cli.github.com/) instalado):
+
+```bash
+./scripts/git-push.sh
 ```
