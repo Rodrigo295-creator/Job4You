@@ -14,6 +14,7 @@ export const SETTINGS_EXT_PT: Record<string, string> = {
   'nav.settingsAbout': 'Sobre',
 
   'settings.pageTitle': 'Configurações',
+  'settings.rowSoon': 'Em breve',
   'settings.pageSubtitle': 'Personalize idioma, aparência, alertas e privacidade do app.',
   'settings.tab.general': 'Geral',
   'settings.tab.appearance': 'Aparência',
@@ -160,6 +161,7 @@ export const SETTINGS_EXT_EN: Record<string, string> = {
   'nav.settingsAbout': 'About',
 
   'settings.pageTitle': 'Settings',
+  'settings.rowSoon': 'Coming soon',
   'settings.pageSubtitle': 'Customize language, appearance, alerts, and app privacy.',
   'settings.tab.general': 'General',
   'settings.tab.appearance': 'Appearance',
@@ -306,6 +308,7 @@ export const SETTINGS_EXT_ES: Record<string, string> = {
   'nav.settingsAbout': 'Acerca de',
 
   'settings.pageTitle': 'Configuración',
+  'settings.rowSoon': 'Próximamente',
   'settings.pageSubtitle': 'Personaliza idioma, apariencia, alertas y privacidad de la app.',
   'settings.tab.general': 'General',
   'settings.tab.appearance': 'Apariencia',
