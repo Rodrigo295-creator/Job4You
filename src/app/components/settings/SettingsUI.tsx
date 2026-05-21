@@ -48,6 +48,7 @@ export function Row({
   sublabel,
   right,
   onClick,
+  disabled,
   color = 'text-[#F97316]',
 }: {
   icon: ElementType;
@@ -55,17 +56,28 @@ export function Row({
   sublabel?: string;
   right?: ReactNode;
   onClick?: () => void;
+  disabled?: boolean;
   color?: string;
 }) {
-  const Tag = onClick ? 'button' : 'div';
+  const { t } = useAppSettings();
+  const interactive = Boolean(onClick) && !disabled;
+  const Tag = interactive ? 'button' : 'div';
+  const soonBadge = (
+    <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full shrink-0">
+      {t('settings.rowSoon')}
+    </span>
+  );
   return (
     <Tag
-      type={onClick ? 'button' : undefined}
-      onClick={onClick}
+      type={interactive ? 'button' : undefined}
+      onClick={interactive ? onClick : undefined}
+      aria-disabled={disabled || undefined}
       className={`flex flex-col gap-3 sm:flex-row sm:items-center w-full min-w-0 px-4 py-4 sm:py-3.5 text-left transition-colors ${
-        onClick
+        interactive
           ? 'hover:bg-slate-50 dark:hover:bg-white/5 active:bg-slate-100 dark:active:bg-white/10 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#F97316]'
-          : ''
+          : disabled
+            ? 'opacity-70 cursor-default'
+            : ''
       }`}
     >
       <div className="flex items-start gap-3 flex-1 min-w-0 w-full">
@@ -80,7 +92,7 @@ export function Row({
         </div>
       </div>
       <div className="flex shrink-0 items-center justify-end w-full sm:w-auto pl-12 sm:pl-0">
-        {right ?? (onClick ? <ChevronRight className="w-4 h-4 text-slate-300 dark:text-slate-600" /> : null)}
+        {right ?? (disabled ? soonBadge : interactive ? <ChevronRight className="w-4 h-4 text-slate-300 dark:text-slate-600" /> : null)}
       </div>
     </Tag>
   );
