@@ -36,7 +36,16 @@ export const AUTH_PT: Record<string, string> = {
   'auth.error.passwordMismatch': 'As senhas não coincidem.',
   'auth.error.passwordShort': 'A senha deve ter pelo menos 8 caracteres.',
   'auth.error.required': 'Preencha todos os campos obrigatórios.',
+  'auth.error.generic': 'Não foi possível concluir o login. Tente novamente.',
+  'auth.error.invalidCredentials': 'E-mail ou senha incorretos.',
+  'auth.error.emailTaken': 'Este e-mail já está cadastrado.',
+  'auth.error.emailNotConfirmed': 'Confirme seu e-mail antes de entrar.',
+  'auth.error.passwordWeak': 'Senha fraca. Use pelo menos 8 caracteres.',
+  'auth.error.confirmEmail': 'Conta criada. Verifique seu e-mail para confirmar o cadastro.',
+  'auth.error.forgotUnavailable': 'Informe seu e-mail para recuperar a senha.',
+  'auth.resetEmailSent': 'Enviamos um link de recuperação para o seu e-mail.',
   'auth.demoNote': 'Demonstração: login simulado sem backend.',
+  'auth.demoNoteSupabase': 'Conta segura com Supabase Auth (e-mail, Google ou Apple).',
 };
 
 export const AUTH_EN: Record<string, string> = {
@@ -75,7 +84,16 @@ export const AUTH_EN: Record<string, string> = {
   'auth.error.passwordMismatch': 'Passwords do not match.',
   'auth.error.passwordShort': 'Password must be at least 8 characters.',
   'auth.error.required': 'Please fill in all required fields.',
+  'auth.error.generic': 'Could not sign in. Please try again.',
+  'auth.error.invalidCredentials': 'Incorrect email or password.',
+  'auth.error.emailTaken': 'This email is already registered.',
+  'auth.error.emailNotConfirmed': 'Confirm your email before signing in.',
+  'auth.error.passwordWeak': 'Weak password. Use at least 8 characters.',
+  'auth.error.confirmEmail': 'Account created. Check your email to confirm.',
+  'auth.error.forgotUnavailable': 'Enter your email to reset your password.',
+  'auth.resetEmailSent': 'We sent a recovery link to your email.',
   'auth.demoNote': 'Demo: simulated sign-in without a backend.',
+  'auth.demoNoteSupabase': 'Secure accounts with Supabase Auth (email, Google, or Apple).',
 };
 
 export const AUTH_ES: Record<string, string> = {
@@ -114,5 +132,14 @@ export const AUTH_ES: Record<string, string> = {
   'auth.error.passwordMismatch': 'Las contraseñas no coinciden.',
   'auth.error.passwordShort': 'La contraseña debe tener al menos 8 caracteres.',
   'auth.error.required': 'Completa todos los campos obligatorios.',
+  'auth.error.generic': 'No se pudo iniciar sesión. Inténtalo de nuevo.',
+  'auth.error.invalidCredentials': 'Correo o contraseña incorrectos.',
+  'auth.error.emailTaken': 'Este correo ya está registrado.',
+  'auth.error.emailNotConfirmed': 'Confirma tu correo antes de entrar.',
+  'auth.error.passwordWeak': 'Contraseña débil. Usa al menos 8 caracteres.',
+  'auth.error.confirmEmail': 'Cuenta creada. Revisa tu correo para confirmar.',
+  'auth.error.forgotUnavailable': 'Introduce tu correo para recuperar la contraseña.',
+  'auth.resetEmailSent': 'Enviamos un enlace de recuperación a tu correo.',
   'auth.demoNote': 'Demostración: inicio de sesión simulado sin backend.',
+  'auth.demoNoteSupabase': 'Cuentas seguras con Supabase Auth (correo, Google o Apple).',
 };
