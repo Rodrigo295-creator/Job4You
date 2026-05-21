@@ -4,6 +4,7 @@ import {
   type DirectoryProfessional,
 } from '../data/mockDirectory';
 import { supabase, supabaseConfigured } from '@/lib/supabase';
+import { normalizeProfile } from '@/lib/supabase-profile';
 
 const FALLBACK_IMG =
   'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80';
@@ -38,10 +39,12 @@ export function useProfessionals(): {
       completed_jobs_count: number;
       profiles:
         | { full_name: string; avatar_url: string | null }
+        | { full_name: string; avatar_url: string | null }[]
         | null
         | undefined;
       categories:
         | { label: string; slug: string }
+        | { label: string; slug: string }[]
         | null
         | undefined;
     };
@@ -79,9 +82,10 @@ export function useProfessionals(): {
     }
 
     const list: DirectoryProfessional[] = rawRows.map((row) => {
-      const name = row.profiles?.full_name?.trim() || 'Profissional';
-      const categoryLabel =
-        row.categories?.label?.trim() || 'Serviços';
+      const profile = normalizeProfile(row.profiles);
+      const category = normalizeProfile(row.categories);
+      const name = profile?.full_name?.trim() || 'Profissional';
+      const categoryLabel = category?.label?.trim() || 'Serviços';
       return {
         id: row.id,
         name,
@@ -97,7 +101,7 @@ export function useProfessionals(): {
             ? parseFloat(row.price_amount) || 0
             : Number(row.price_amount) || 0,
         priceUnit: formatPriceUnit(row.price_unit ?? 'hora'),
-        image: row.profiles?.avatar_url?.trim() || FALLBACK_IMG,
+        image: profile?.avatar_url?.trim() || FALLBACK_IMG,
         isOnline: row.is_online,
         completedJobs: row.completed_jobs_count,
       };

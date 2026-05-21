@@ -6,11 +6,13 @@ export interface AuthSession {
   provider: AuthProvider;
   email?: string;
   name?: string;
+  /** Supabase Auth user id when using backend auth */
+  userId?: string;
 }
 
 const AUTH_STORAGE_KEY = 'job4you-auth';
-/** @deprecated persisted login in localStorage — cleared on read */
-const LEGACY_AUTH_STORAGE_KEY = 'job4you-auth';
+/** Legacy key from older builds that used localStorage */
+const LEGACY_AUTH_STORAGE_KEY = 'job4you-auth-local';
 const LOGIN_INTENT_KEY = 'job4you-login-intent';
 
 function clearLegacyAuth() {
