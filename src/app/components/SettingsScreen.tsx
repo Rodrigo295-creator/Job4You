@@ -30,6 +30,12 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import { useAppSettings, type Theme, type FontSize } from '../context/AppSettings';
+import {
+  readNotificationPrefs,
+  writeNotificationPrefs,
+  readPrivacyPrefs,
+  writePrivacyPrefs,
+} from '@/lib/settings-storage';
 import { BrandName } from './Logo';
 import {
   SettingsPageShell,
@@ -97,6 +103,8 @@ export function SettingsScreen({ initialTab = 'general', onOpenTerms, onOpenPriv
     setTouchTargets,
     captions,
     setCaptions,
+    screenReader,
+    setScreenReader,
   } = useAppSettings();
   const [tab, setTab] = useState<SettingsTab>(initialTab);
   useEffect(() => {
@@ -109,31 +117,53 @@ export function SettingsScreen({ initialTab = 'general', onOpenTerms, onOpenPriv
   const [units, setUnits] = useState<'metric' | 'imperial'>('metric');
   const [density, setDensity] = useState<'comfort' | 'compact'>('comfort');
 
-  const [pushNotif, setPushNotif] = useState(true);
-  const [emailNotif, setEmailNotif] = useState(true);
-  const [smsNotif, setSmsNotif] = useState(false);
-  const [quietHours, setQuietHours] = useState(true);
-  const [notifSound, setNotifSound] = useState(true);
+  const initialNotif = readNotificationPrefs();
+  const [pushNotif, setPushNotif] = useState(initialNotif.push);
+  const [emailNotif, setEmailNotif] = useState(initialNotif.email);
+  const [smsNotif, setSmsNotif] = useState(initialNotif.sms);
+  const [quietHours, setQuietHours] = useState(initialNotif.quietHours);
+  const [notifSound, setNotifSound] = useState(initialNotif.sound);
   const [notifPrefs, setNotifPrefs] = useState({
-    newOffers: true,
-    messages: true,
-    payments: true,
-    reminders: true,
-    reviews: true,
-    orderUpdates: true,
-    promotions: false,
-    marketing: false,
+    newOffers: initialNotif.newOffers,
+    messages: initialNotif.messages,
+    payments: initialNotif.payments,
+    reminders: initialNotif.reminders,
+    reviews: initialNotif.reviews,
+    orderUpdates: initialNotif.orderUpdates,
+    promotions: initialNotif.promotions,
+    marketing: initialNotif.marketing,
   });
 
-  const [visibility, setVisibility] = useState<'public' | 'contacts' | 'private'>('public');
-  const [onlineStatus, setOnlineStatus] = useState(true);
-  const [analytics, setAnalytics] = useState(true);
-  const [personalizedAds, setPersonalizedAds] = useState(false);
-  const [locationAccess, setLocationAccess] = useState(true);
+  const initialPrivacy = readPrivacyPrefs();
+  const [visibility, setVisibility] = useState(initialPrivacy.visibility);
+  const [onlineStatus, setOnlineStatus] = useState(initialPrivacy.onlineStatus);
+  const [analytics, setAnalytics] = useState(initialPrivacy.analytics);
+  const [personalizedAds, setPersonalizedAds] = useState(initialPrivacy.personalizedAds);
+  const [locationAccess, setLocationAccess] = useState(initialPrivacy.locationAccess);
 
   const [biometric, setBiometric] = useState(false);
   const [loginAlerts, setLoginAlerts] = useState(true);
-  const [screenReader, setScreenReader] = useState(false);
+
+  useEffect(() => {
+    writeNotificationPrefs({
+      push: pushNotif,
+      email: emailNotif,
+      sms: smsNotif,
+      quietHours,
+      sound: notifSound,
+      ...notifPrefs,
+    });
+  }, [pushNotif, emailNotif, smsNotif, quietHours, notifSound, notifPrefs]);
+
+  useEffect(() => {
+    writePrivacyPrefs({
+      visibility,
+      onlineStatus,
+      analytics,
+      personalizedAds,
+      locationAccess,
+    });
+  }, [visibility, onlineStatus, analytics, personalizedAds, locationAccess]);
 
   const langLabel = locale === 'pt-BR' ? 'Português (Brasil)' : locale === 'en-US' ? 'English (US)' : 'Español';
   const currencyLabel = t(`settings.currency.${currency}`);
@@ -195,7 +225,7 @@ export function SettingsScreen({ initialTab = 'general', onOpenTerms, onOpenPriv
                 <Row icon={DollarSign} label={t('settings.currency')} sublabel={currencyLabel} onClick={() => setModal('currency')} color="text-emerald-500" />
               </Section>
               <Section title={t('settings.general.region')} description={t('settings.general.regionSub')}>
-                <Row icon={Clock} label={t('settings.general.timezone')} sublabel="America/São_Paulo (GMT-3)" color="text-slate-500" />
+                <Row icon={Clock} label={t('settings.general.timezone')} sublabel="America/São_Paulo (GMT-3)" color="text-slate-500" disabled />
                 <InlineBlock title={t('settings.general.dateFormat')} icon={FileText} iconColor="text-indigo-500">
                   <ChipSelect
                     value={dateFormat}
@@ -356,19 +386,19 @@ export function SettingsScreen({ initialTab = 'general', onOpenTerms, onOpenPriv
                   <SavedBanner message={t('settings.privacy.exportDone')} />
                 </div>
               )}
-              <Row icon={Trash2} label={t('settings.privacy.delete')} sublabel={t('settings.privacy.deleteSub')} color="text-rose-500" />
+              <Row icon={Trash2} label={t('settings.privacy.delete')} sublabel={t('settings.privacy.deleteSub')} color="text-rose-500" disabled />
             </Section>
           )}
 
           {tab === 'security' && (
             <Section title={t('settings.tab.security')}>
-              <Row icon={Lock} label={t('settings.security.password')} sublabel={t('settings.security.passwordSub')} color="text-amber-600" />
+              <Row icon={Lock} label={t('settings.security.password')} sublabel={t('settings.security.passwordSub')} color="text-amber-600" disabled />
               <Row
                 icon={Shield}
                 label={t('settings.twoFactor')}
                 sublabel={t('settings.twoFactorSub')}
                 color="text-teal-500"
-                right={<span className="text-xs font-medium text-[#F97316]">{t('settings.twoFactorEnable')}</span>}
+                disabled
               />
               <ToggleRow icon={Fingerprint} label={t('settings.security.biometric')} sublabel={t('settings.security.biometricSub')} value={biometric} onChange={setBiometric} color="text-indigo-500" />
               <ToggleRow icon={Mail} label={t('settings.security.loginAlerts')} sublabel={t('settings.security.loginAlertsSub')} value={loginAlerts} onChange={setLoginAlerts} color="text-blue-500" />
@@ -416,11 +446,11 @@ export function SettingsScreen({ initialTab = 'general', onOpenTerms, onOpenPriv
 
           {tab === 'billing' && (
             <Section title={t('settings.billing.methods')} description={t('settings.billing.methodsSub')}>
-              <Row icon={CreditCard} label={t('settings.billing.cardDefault')} sublabel={t('settings.billing.cardExpiry')} color="text-indigo-500" />
-              <Row icon={Wallet} label={t('settings.billing.pix')} sublabel={t('settings.billing.pixSub')} color="text-emerald-600" />
-              <Row icon={CreditCard} label={t('settings.billing.addCard')} color="text-[#F97316]" />
-              <Row icon={FileText} label={t('settings.billing.invoices')} sublabel={t('settings.billing.invoicesSub')} color="text-slate-500" />
-              <Row icon={Mail} label={t('settings.billing.invoiceEmail')} sublabel="lucas.ferreira@email.com" color="text-blue-500" />
+              <Row icon={CreditCard} label={t('settings.billing.cardDefault')} sublabel={t('settings.billing.cardExpiry')} color="text-indigo-500" disabled />
+              <Row icon={Wallet} label={t('settings.billing.pix')} sublabel={t('settings.billing.pixSub')} color="text-emerald-600" disabled />
+              <Row icon={CreditCard} label={t('settings.billing.addCard')} color="text-[#F97316]" disabled />
+              <Row icon={FileText} label={t('settings.billing.invoices')} sublabel={t('settings.billing.invoicesSub')} color="text-slate-500" disabled />
+              <Row icon={Mail} label={t('settings.billing.invoiceEmail')} sublabel="lucas.ferreira@email.com" color="text-blue-500" disabled />
             </Section>
           )}
 
@@ -441,9 +471,9 @@ export function SettingsScreen({ initialTab = 'general', onOpenTerms, onOpenPriv
                 color="text-teal-500"
                 onClick={onOpenPrivacy}
               />
-              <Row icon={HelpCircle} label={t('settings.about.help')} sublabel={t('settings.about.helpSub')} color="text-blue-500" />
-              <Row icon={Star} label={t('settings.about.rate')} sublabel={t('settings.about.rateSub')} color="text-amber-500" />
-              <Row icon={FileText} label={t('settings.about.licenses')} sublabel="MIT, Apache 2.0, BSD" color="text-slate-400" />
+              <Row icon={HelpCircle} label={t('settings.about.help')} sublabel={t('settings.about.helpSub')} color="text-blue-500" disabled />
+              <Row icon={Star} label={t('settings.about.rate')} sublabel={t('settings.about.rateSub')} color="text-amber-500" disabled />
+              <Row icon={FileText} label={t('settings.about.licenses')} sublabel="MIT, Apache 2.0, BSD" color="text-slate-400" disabled />
             </Section>
           )}
 
