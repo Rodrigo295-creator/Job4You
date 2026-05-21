@@ -80,24 +80,34 @@
   --sidebar-border: #334155;
   --sidebar-ring: #F97316;
 
+  /* Tailwind background/border tokens for dark mode (surfaces stay dark, text handled by CSS rules) */
   --color-white: #1e293b;
   --color-slate-50: #1e293b;
   --color-slate-100: #1e2d40;
   --color-slate-200: #334155;
 }
 
+/* ─── Dark mode surface overrides ─── */
 .dark .bg-\[\#F8F8F6\] { background-color: #0f172a !important; }
 .dark .bg-\[\#F8F8F8\] { background-color: #0f172a !important; }
 .dark .border-slate-900 { border-color: #0f172a !important; }
+
+/* Bottom nav dark */
 .dark nav { background-color: #1e293b !important; border-color: #334155 !important; }
 
+/* ─── Dark mode: ALL text → white ─── */
+
+/* Semantic elements */
 .dark p, .dark span, .dark label, .dark li,
 .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6,
 .dark button, .dark a, .dark input, .dark textarea, .dark select { color: #ffffff !important; }
 
+/* Arbitrary color classes used in the app */
 .dark .text-\[\#0F172A\] { color: #ffffff !important; }
 .dark .text-\[\#64748B\] { color: #ffffff !important; }
 .dark .text-\[\#1E293B\] { color: #ffffff !important; }
+
+/* All slate shades → white */
 .dark .text-slate-900 { color: #ffffff !important; }
 .dark .text-slate-800 { color: #ffffff !important; }
 .dark .text-slate-700 { color: #ffffff !important; }
@@ -106,15 +116,22 @@
 .dark .text-slate-400 { color: #ffffff !important; }
 .dark .text-slate-300 { color: #ffffff !important; }
 .dark .text-slate-200 { color: #ffffff !important; }
+
+/* Keep orange accent texts orange */
 .dark .text-\[\#F97316\] { color: #F97316 !important; }
 .dark .text-orange-500   { color: #F97316 !important; }
+
+/* Keep status/semantic colors */
 .dark .text-emerald-600, .dark .text-green-600 { color: #34d399 !important; }
 .dark .text-red-500, .dark .text-rose-500      { color: #f87171 !important; }
 .dark .text-amber-500, .dark .text-amber-400   { color: #fbbf24 !important; }
 .dark .text-blue-500, .dark .text-sky-500      { color: #60a5fa !important; }
 
+/* ─── Light mode: headings orange, body near-black ─── */
 h1, h2, h3 { color: #F97316; }
 h4          { color: #0F172A; }
+
+/* ─── Card / input surfaces in dark ─── */
 .dark .shadow-sm { box-shadow: 0 1px 3px rgba(0,0,0,0.5) !important; }
 
 @theme inline {
@@ -159,30 +176,121 @@ h4          { color: #0F172A; }
 }
 
 @layer base {
-  * { @apply border-border outline-ring/50; }
-  body { @apply bg-background text-foreground; }
-  html { font-size: var(--font-size); }
-  h1 { font-size: var(--text-2xl); font-weight: var(--font-weight-medium); line-height: 1.5; }
-  h2 { font-size: var(--text-xl); font-weight: var(--font-weight-medium); line-height: 1.5; }
-  h3 { font-size: var(--text-lg); font-weight: var(--font-weight-medium); line-height: 1.5; }
-  h4 { font-size: var(--text-base); font-weight: var(--font-weight-medium); line-height: 1.5; }
-  label { font-size: var(--text-base); font-weight: var(--font-weight-medium); line-height: 1.5; }
-  button { font-size: var(--text-base); font-weight: var(--font-weight-medium); line-height: 1.5; }
-  input { font-size: var(--text-base); font-weight: var(--font-weight-normal); line-height: 1.5; }
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  /**
+  * Default typography styles for HTML elements (h1-h4, p, label, button, input).
+  * These are in @layer base, so Tailwind utility classes (like text-sm, text-lg) automatically override them.
+  */
+
+  html {
+    font-size: var(--font-size);
+  }
+
+  h1 {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  h2 {
+    font-size: var(--text-xl);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  h3 {
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  h4 {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  label {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  button {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  input {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-normal);
+    line-height: 1.5;
+  }
 }
 
-html.reduce-motion *, html.reduce-motion *::before, html.reduce-motion *::after {
+/* Acessibilidade — classes aplicadas via AppSettings */
+html.reduce-motion *,
+html.reduce-motion *::before,
+html.reduce-motion *::after {
   animation-duration: 0.01ms !important;
   animation-iteration-count: 1 !important;
   transition-duration: 0.01ms !important;
   scroll-behavior: auto !important;
 }
-html.no-animations *, html.no-animations *::before, html.no-animations *::after { animation: none !important; }
-html.high-contrast { --border: #0f172a; --muted-foreground: #334155; }
-html.high-contrast.dark { --border: #e2e8f0; --foreground: #f8fafc; --muted-foreground: #cbd5e1; }
-html.high-contrast .border-slate-200\/80, html.high-contrast .border-slate-200 { border-color: var(--border) !important; }
-html.touch-targets .settings-toggle { min-height: 44px; min-width: 52px; }
-html.touch-targets nav[aria-label] button { min-height: 44px; padding-top: 0.625rem; padding-bottom: 0.625rem; }
-html.screen-reader-mode button:not(:disabled), html.screen-reader-mode a[href] { outline-offset: 2px; }
-html.screen-reader-mode button:focus-visible, html.screen-reader-mode a:focus-visible { outline: 2px solid var(--ring); }
-html.captions-enabled [data-caption], html.captions-enabled video::cue { font-size: 0.875rem; line-height: 1.4; }
+
+html.no-animations *,
+html.no-animations *::before,
+html.no-animations *::after {
+  animation: none !important;
+}
+
+html.high-contrast {
+  --border: #0f172a;
+  --muted-foreground: #334155;
+}
+
+html.high-contrast.dark {
+  --border: #e2e8f0;
+  --foreground: #f8fafc;
+  --muted-foreground: #cbd5e1;
+}
+
+html.high-contrast .border-slate-200\/80,
+html.high-contrast .border-slate-200 {
+  border-color: var(--border) !important;
+}
+
+html.touch-targets .settings-toggle {
+  min-height: 44px;
+  min-width: 52px;
+}
+
+html.touch-targets nav[aria-label] button {
+  min-height: 44px;
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
+}
+
+html.screen-reader-mode button:not(:disabled),
+html.screen-reader-mode a[href] {
+  outline-offset: 2px;
+}
+
+html.screen-reader-mode button:focus-visible,
+html.screen-reader-mode a:focus-visible {
+  outline: 2px solid var(--ring);
+}
+
+html.captions-enabled [data-caption],
+html.captions-enabled video::cue {
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
